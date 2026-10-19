@@ -1,0 +1,35 @@
+name: Windows build and test
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Test frontend and CDP
+        run: npm test
+      - name: Test installation core
+        shell: powershell
+        run: ./tools/test-installer.ps1 -InProcess
+      - name: Build setup and portable package
+        shell: powershell
+        run: ./tools/build-release.ps1
+      - name: Test real embedded installer
+        shell: powershell
+        run: |
+          $version=(Get-Content project.json -Raw | ConvertFrom-Json).version
+          ./tools/test-installer-integration.ps1 -Installer "./release/WhaleTheme-Setup-$version.exe" -InProcess
+      - name: Verify release hashes and packaged source
+        shell: powershell
+        run: ./tools/verify-release.ps1
+      - uses: actions/upload-artifact@v4
+        with:
+          name: whale-codex-theme-windows
+          path: release/

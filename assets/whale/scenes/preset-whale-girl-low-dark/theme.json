@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "id": "preset-whale-girl-low-dark",
+  "name": "鲸鱼娘 · Low · 深色",
+  "image": "background.webp",
+  "appearance": "dark",
+  "brandSubtitle": "CODEX",
+  "tagline": "",
+  "art": {
+    "focusX": 0.8,
+    "focusY": 0.45,
+    "safeArea": "left",
+    "taskMode": "ambient"
+  },
+  "colors": {
+    "background": "#071322",
+    "panel": "#102b43",
+    "panelAlt": "#153751",
+    "accent": "#7bd3fa",
+    "accentAlt": "#a4ceff",
+    "secondary": "#91bcff",
+    "highlight": "#a4baff",
+    "text": "#e8f5ff",
+    "muted": "#a0bdd4",
+    "line": "#335a7c"
+  }
+}

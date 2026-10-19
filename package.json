@@ -1,0 +1,24 @@
+{
+  "name": "whale-codex-theme",
+  "version": "3.3.1",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "powershell -NoProfile -ExecutionPolicy Bypass -File windows/launch.ps1",
+    "settings": "powershell -NoProfile -ExecutionPolicy Bypass -File windows/launch.ps1 -OpenSettings",
+    "restore": "powershell -NoProfile -ExecutionPolicy Bypass -File windows/restore.ps1",
+    "test": "node --test tests/*.test.mjs",
+    "build": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/build-windows.ps1",
+    "package": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/build-release.ps1",
+    "preview": "node tools/preview.mjs",
+    "qa:browser": "node tools/browser-qa.mjs"
+  },
+  "description": "鲸鱼工作台：Windows Codex 海洋主题、开屏动画与桌边伙伴",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/duoxichangan/whale-codex-theme.git"
+  }
+}

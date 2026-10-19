@@ -1,0 +1,17 @@
+﻿param([switch]$InProcess)
+$ErrorActionPreference='Stop'
+$root=Split-Path $PSScriptRoot -Parent
+$directory=Join-Path $root '.build/installer-tests'
+New-Item -ItemType Directory -Path $directory -Force | Out-Null
+$compiler=Join-Path $env:SystemRoot 'Microsoft.NET/Framework64/v4.0.30319/csc.exe'
+& $compiler /nologo /codepage:65001 /target:exe /reference:System.IO.Compression.dll /reference:System.IO.Compression.FileSystem.dll /reference:System.Web.Extensions.dll ('/out:'+(Join-Path $directory 'InstallerTests.exe')) (Join-Path $root 'windows/InstallCore.cs') (Join-Path $PSScriptRoot 'InstallerTests.cs')
+if($LASTEXITCODE -ne 0){throw 'Installer test compilation failed'}
+$executable=Join-Path $directory 'InstallerTests.exe'
+if($InProcess){
+ $assembly=[Reflection.Assembly]::Load([IO.File]::ReadAllBytes($executable))
+ $result=$assembly.EntryPoint.Invoke($null,@())
+ if($result -ne 0){throw 'Installer tests failed'}
+}else{
+ & $executable
+ if($LASTEXITCODE -ne 0){throw 'Installer tests failed'}
+}

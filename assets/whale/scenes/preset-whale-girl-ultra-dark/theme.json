@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "id": "preset-whale-girl-ultra-dark",
+  "name": "鲸鱼娘 · Ultra · 深色",
+  "image": "background.webp",
+  "appearance": "dark",
+  "brandSubtitle": "CODEX",
+  "tagline": "",
+  "art": {
+    "focusX": 0.8,
+    "focusY": 0.45,
+    "safeArea": "left",
+    "taskMode": "ambient"
+  },
+  "colors": {
+    "background": "#071526",
+    "panel": "#102138",
+    "panelAlt": "#18324d",
+    "accent": "#b5d8ff",
+    "accentAlt": "#d5eaff",
+    "secondary": "#93bfe8",
+    "highlight": "#d9bc84",
+    "text": "#e8f5ff",
+    "muted": "#a0bdd4",
+    "line": "#335a7c"
+  }
+}

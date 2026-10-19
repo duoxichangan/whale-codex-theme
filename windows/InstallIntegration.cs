@@ -1,0 +1,74 @@
+using System;
+using System.IO;
+using System.Runtime.InteropServices;
+using Microsoft.Win32;
+using System.Collections.Generic;
+using System.Linq;
+
+public static class InstallIntegration {
+ public const string RegistryPath="Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\WhaleTheme";
+ public static string DefaultRoot {get{return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),"WhaleTheme","app");}}
+ public static string Desktop {get{return Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);}}
+ public static string Menu {get{return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Programs),"鲸鱼工作台");}}
+ static string[] Names={"鲸鱼工作台.lnk","鲸鱼工作台 设置.lnk"};
+ static bool Owned(ShellShortcut link,string target,bool settings){return String.Equals(link.TargetPath,target,StringComparison.OrdinalIgnoreCase)&&link.Arguments==(settings?"--settings":"")&&String.Equals(link.WorkingDirectory,Path.GetDirectoryName(target),StringComparison.OrdinalIgnoreCase)&&String.Equals(link.IconLocation,target+",0",StringComparison.OrdinalIgnoreCase)&&link.Hotkey==0;}
+ static void Shortcut(string file,string target,bool settings){
+  Directory.CreateDirectory(Path.GetDirectoryName(file));
+  using(var link=new ShellShortcut(file)){
+   if(File.Exists(file)&&!String.Equals((string)link.TargetPath,target,StringComparison.OrdinalIgnoreCase))throw new IOException("已有同名快捷方式指向其他程序："+file);
+   if(File.Exists(file)&&!Owned(link,target,settings))return;
+   link.TargetPath=target;
+   link.WorkingDirectory=Path.GetDirectoryName(target);
+   link.Arguments=settings?"--settings":"";
+   link.IconLocation=target+",0";
+   link.Description=settings?"主题调整已集成至窗口内":"一小片海";
+   link.Save();
+  }
+ }
+ static void RegisterUnsafe(string root,string desktop,string menu,string registryPath,Action<string> beforeWrite){
+  string target=Path.Combine(root,"CodexStartup.exe");string setup=Path.Combine(root,"CodexStartupSetup.exe");
+  if(!File.Exists(target)||!File.Exists(setup)||!File.Exists(Path.Combine(root,InstallCore.ManifestName)))throw new IOException("安装文件不完整");
+  foreach(string directory in new[]{desktop,menu}){
+   string file=Path.Combine(directory,Names[0]);if(beforeWrite!=null)beforeWrite(file);Shortcut(file,target,false);
+   // Migrate only shortcuts still owned by older releases. Preserve user edits.
+   string legacy=Path.Combine(directory,Names[1]);if(File.Exists(legacy))using(var link=new ShellShortcut(legacy)){if(Owned(link,target,true)){if(beforeWrite!=null)beforeWrite(legacy);File.Delete(legacy);}}
+  }
+  if(beforeWrite!=null)beforeWrite("registry");
+  using(var key=Registry.CurrentUser.CreateSubKey(registryPath)){
+   key.SetValue("DisplayName","鲸鱼工作台");key.SetValue("DisplayVersion",InstallCore.Version);key.SetValue("Publisher","鲸鱼工作台 community project");key.SetValue("InstallLocation",root);key.SetValue("DisplayIcon",target+",0");key.SetValue("UninstallString","\""+setup+"\" --uninstall");key.SetValue("NoModify",1,RegistryValueKind.DWord);key.SetValue("NoRepair",1,RegistryValueKind.DWord);
+  }
+ }
+ public static void Register(string root,string desktop,string menu,string registryPath,Action<string> beforeWrite=null){
+  var files=new Dictionary<string,byte[]>();
+  foreach(string directory in new[]{desktop,menu})foreach(string name in Names){string file=Path.Combine(directory,name);files.Add(file,File.Exists(file)?File.ReadAllBytes(file):null);}
+  var values=new Dictionary<string,object>();var kinds=new Dictionary<string,RegistryValueKind>();bool existed;
+  using(var key=Registry.CurrentUser.OpenSubKey(registryPath)){
+   existed=key!=null;
+   if(existed){if(!String.Equals((string)key.GetValue("InstallLocation"),root,StringComparison.OrdinalIgnoreCase))throw new IOException("已有卸载注册信息属于其他程序或安装位置。");foreach(string name in key.GetValueNames()){values[name]=key.GetValue(name,null,RegistryValueOptions.DoNotExpandEnvironmentNames);kinds[name]=key.GetValueKind(name);}}
+  }
+  bool hadDesktop=Directory.Exists(desktop),hadMenu=Directory.Exists(menu);
+  try{RegisterUnsafe(root,desktop,menu,registryPath,beforeWrite);}
+  catch(Exception failure){
+   var errors=new List<Exception>();
+   foreach(var entry in files){try{if(entry.Value!=null)File.WriteAllBytes(entry.Key,entry.Value);else if(File.Exists(entry.Key))File.Delete(entry.Key);}catch(Exception error){errors.Add(error);}}
+   try{
+    if(!existed)Registry.CurrentUser.DeleteSubKeyTree(registryPath,false);
+    else using(var key=Registry.CurrentUser.CreateSubKey(registryPath)){foreach(string name in key.GetValueNames().Where(name=>!values.ContainsKey(name)))key.DeleteValue(name);foreach(var value in values)key.SetValue(value.Key,value.Value,kinds[value.Key]);}
+   }catch(Exception error){errors.Add(error);}
+   foreach(string directory in new[]{hadDesktop?null:desktop,hadMenu?null:menu}){try{if(directory!=null&&Directory.Exists(directory)&&Directory.GetFileSystemEntries(directory).Length==0)Directory.Delete(directory);}catch(Exception error){errors.Add(error);}}
+   if(errors.Count>0){errors.Insert(0,failure);throw new AggregateException("安装入口回滚未完成。",errors);}throw;
+  }
+ }
+ public static void Remove(string root,string desktop,string menu,string registryPath){
+  string target=Path.Combine(root,"CodexStartup.exe");
+  foreach(string directory in new[]{desktop,menu})for(int i=0;i<Names.Length;i++){
+   string name=Names[i];
+   string file=Path.Combine(directory,name);if(!File.Exists(file))continue;
+   using(var link=new ShellShortcut(file)){if(Owned(link,target,i==1))File.Delete(file);}
+  }
+  if(Directory.Exists(menu)&&Directory.GetFileSystemEntries(menu).Length==0)Directory.Delete(menu);
+  using(var key=Registry.CurrentUser.OpenSubKey(registryPath)){if(key!=null&&!String.Equals((string)key.GetValue("InstallLocation"),root,StringComparison.OrdinalIgnoreCase))throw new IOException("卸载注册信息属于其他安装位置。");}
+  Registry.CurrentUser.DeleteSubKeyTree(registryPath,false);
+ }
+}
+

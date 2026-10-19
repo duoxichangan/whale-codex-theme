@@ -1,0 +1,17 @@
+{
+  "source": "\u6697.mp4",
+  "sourceSha256": "fcdb2d7fabc7c8e654a57d62bf4230642576fea690aac72e6db921a89415f983",
+  "outputSha256": "675b7ad383ec3d09ba8229c119a7de3252a42a16272f4cd6799daeb3d5be678e",
+  "rampSourceStart": 11.0,
+  "rampSourceEnd": 15.0,
+  "endSpeed": 4.0,
+  "speedFunction": "1 + 3 * ((sourceTime - 11) / 4)^2",
+  "trimStartSeconds": 0.5,
+  "endColor": "0x04091c",
+  "rampOutputEnd": 12.91839915231229,
+  "tailHoldSeconds": 0.34,
+  "tailBlendSeconds": 0.2,
+  "fps": 24,
+  "audio": "Tempo follows the ramp in 24 segments; pitch preserved; final fade.",
+  "sourceUnmodified": true
+}

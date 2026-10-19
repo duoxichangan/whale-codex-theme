@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "id": "preset-whale-girl-medium-dark",
+  "name": "鲸鱼娘 · Medium · 深色",
+  "image": "background.webp",
+  "appearance": "dark",
+  "brandSubtitle": "CODEX",
+  "tagline": "",
+  "art": {
+    "focusX": 0.8,
+    "focusY": 0.45,
+    "safeArea": "left",
+    "taskMode": "ambient"
+  },
+  "colors": {
+    "background": "#071322",
+    "panel": "#0a2537",
+    "panelAlt": "#0d3147",
+    "accent": "#69bfe8",
+    "accentAlt": "#8dbfff",
+    "secondary": "#91bcff",
+    "highlight": "#a4baff",
+    "text": "#e8f5ff",
+    "muted": "#a0bdd4",
+    "line": "#335a7c"
+  }
+}

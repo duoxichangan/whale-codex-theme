@@ -1,0 +1,10 @@
+{
+  "name": "whale-codex-theme",
+  "version": "3.3.1",
+  "reference": "https://github.com/lilhuu/Codex-Startup-Windows",
+  "referenceCommit": "10d986ca532564a7546c32838567eb01e94ef2dd",
+  "platform": "Windows x64",
+  "upstream": "https://github.com/M1ddle0/codex-startup-animation",
+  "upstreamCommit": "52bf7c7377663c42aad0730ab4868a48c1e1d2be",
+  "repository": "https://github.com/duoxichangan/whale-codex-theme"
+}

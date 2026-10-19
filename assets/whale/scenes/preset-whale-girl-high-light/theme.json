@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "id": "preset-whale-girl-high-light",
+  "name": "鲸鱼娘 · High · 浅色",
+  "image": "background.webp",
+  "appearance": "light",
+  "brandSubtitle": "CODEX",
+  "tagline": "",
+  "art": {
+    "focusX": 0.8,
+    "focusY": 0.45,
+    "safeArea": "left",
+    "taskMode": "ambient"
+  },
+  "colors": {
+    "background": "#edf8ff",
+    "panel": "#e5edf7",
+    "panelAlt": "#d9e5f3",
+    "accent": "#275b9d",
+    "accentAlt": "#5688c8",
+    "secondary": "#3774bd",
+    "highlight": "#5275d6",
+    "text": "#15324b",
+    "muted": "#4b6b84",
+    "line": "#a3c8e7"
+  }
+}

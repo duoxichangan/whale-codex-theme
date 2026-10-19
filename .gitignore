@@ -1,0 +1,17 @@
+.build/
+dist/
+release/
+.codegraph/
+*.log
+*.tmp
+.env
+.env.*
+.vscode/
+.idea/
+.qa/
+node_modules/
+coverage/
+playwright-report/
+test-results/
+Thumbs.db
+Desktop.ini

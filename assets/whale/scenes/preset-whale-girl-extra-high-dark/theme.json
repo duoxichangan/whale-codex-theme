@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "id": "preset-whale-girl-extra-high-dark",
+  "name": "鲸鱼娘 · Extra High · 深色",
+  "image": "background.webp",
+  "appearance": "dark",
+  "brandSubtitle": "CODEX",
+  "tagline": "",
+  "art": {
+    "focusX": 0.8,
+    "focusY": 0.45,
+    "safeArea": "left",
+    "taskMode": "ambient"
+  },
+  "colors": {
+    "background": "#081a2c",
+    "panel": "#0c263d",
+    "panelAlt": "#14374f",
+    "accent": "#90cfee",
+    "accentAlt": "#b0e4ff",
+    "secondary": "#80b8dd",
+    "highlight": "#c4d7e8",
+    "text": "#e8f5ff",
+    "muted": "#a0bdd4",
+    "line": "#335a7c"
+  }
+}
